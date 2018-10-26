@@ -4,11 +4,11 @@
 typedef struct Aluno
 {
 	int chave;
-	char nome;
-	char ra;
-	char cpf;
-	char dataN;
-	char sexo;
+	char nome[50];
+	char ra[50];
+	char cpf[50];
+	char dataN[50];
+	char sexo[50];
 }tAluno;
 
 typedef struct no
@@ -24,25 +24,25 @@ void inicializa(TNo **ptr)
 
 void insere(TNo **ptr, tAluno chave)
 {
-	if(*ptr == NULL)
-	{
-		(*ptr) = (TNo *) malloc(sizeof(TNo));
-		(*ptr) -> esq = NULL;
-		(*ptr) -> dir = NULL;
-		(*ptr) -> aluno = chave;
-	}else
-	{
-		if(chave.chave < (*ptr) -> aluno.chave)
+		if(*ptr == NULL)
 		{
-			insere(&(*ptr) -> esq, chave);
-		}else if(chave.chave > (*ptr) -> aluno.chave)
+			(*ptr) = (TNo *) malloc(sizeof(TNo));
+			(*ptr) -> esq = NULL;
+			(*ptr) -> dir = NULL;
+			(*ptr) -> aluno = chave;
+		}else
 		{
-			insere(&(*ptr) -> dir, chave);
+			if(chave.chave < (*ptr) -> aluno.chave)
+			{
+				insere(&(*ptr) -> esq, chave);
+			}else if(chave.chave > (*ptr) -> aluno.chave)
+			{
+				insere(&(*ptr) -> dir, chave);
+			}
 		}
-	}
 }
 
-void antecessor(TNo *q, TNo **r)
+void antecessor(TNo *q, TNo **r)//encontra valor imediatamento inferior ao valor passado, necessario passar valor a esquerda para que procure o valor imediatamente menor!
 {
 	if((*r) -> dir != NULL)
 	{
@@ -55,6 +55,22 @@ void antecessor(TNo *q, TNo **r)
 		free(q);
 	}
 }
+
+
+void sucessor(TNo *q, TNo **r)//é basicamente o inverso da sucessora, pegando o valor imediato a direita para encontrar o menor em seguida!
+{
+	if((*r) -> esq != NULL)
+	{
+		antecessor(q,&(*r) -> esq);
+	}else
+	{
+		q -> aluno = (*r) -> aluno;
+		q = (*r);
+		(*r) = (*r) -> dir;
+		free(q);
+	}
+}
+
 
 void retira(TNo **ptr, int chave)
 {
@@ -85,7 +101,7 @@ void retira(TNo **ptr, int chave)
 	}
 }
 
-void pesquisar(TNo *ptr, int chave)
+int pesquisar(TNo *ptr, int chave)
 {
 	while((ptr != NULL) && (ptr -> aluno.chave != chave))
 	{
@@ -99,10 +115,11 @@ void pesquisar(TNo *ptr, int chave)
 	}
 	if(ptr == NULL)
 	{
-		printf("\nA chave #%d nao esta na arvore!",chave);
+		return 0;
 	}else
 	{
 		printf("\nA chave #%d esta na arvore!",chave);
+		return 1;
 	}
 }
 
@@ -134,7 +151,15 @@ void pesq(TNo *ptr,int chave)
 }
 void pesquisarPai(TNo *ptr, int chave)
 {	
-	pesquisar(ptr,chave);
+	int aux;
+	aux = pesquisar(ptr,chave);
+	if(aux == 0)
+	{	
+		printf("\nChave não esta na arvore!");
+		getchar();
+		getchar();					
+	}
+		
 	if(ptr->aluno.chave == chave)
 	{
 		printf("Nao tem pai pois está na raiz\n");
@@ -165,7 +190,7 @@ void pesqI(TNo *ptr,int chave)
 			
 		}else
 		{
-			pesq(ptr -> esq,chave);
+			pesqI(ptr -> esq,chave);
 		}
 	}
 	if(ptr->dir != NULL)
@@ -181,16 +206,23 @@ void pesqI(TNo *ptr,int chave)
 			}
 		}else
 		{
-			pesq(ptr -> dir,chave);
+			pesqI(ptr -> dir,chave);
 		}
 	}
 }
 void pesquisarIrmao(TNo *ptr, int chave)
 {	
-	pesquisar(ptr,chave);
+	int aux;
+	aux = pesquisar(ptr,chave);
+	if(aux == 0)
+	{	
+		printf("\nChave não esta na arvore!");
+		getchar();
+		getchar();					
+	}
 	if(ptr->aluno.chave == chave)
 	{
-		printf("Nao tem pai pois está na raiz\n");
+		printf("Nao tem irmao pois está na raiz\n");
 	}else
 	{	
 		pesqI(ptr,chave);
@@ -202,11 +234,11 @@ void exibir(tAluno ptr)
 {
 	printf("\n***************");
 	printf("\n* chave: %d   ",ptr.chave);
-	printf("\n* cpf: %c     ",ptr.cpf);
-	printf("\n* dataN: %c   ",ptr.dataN);
-	printf("\n* nome: %c    ",ptr.nome);
-	printf("\n* ra: %c      ",ptr.ra);
-	printf("\n* sexo: %c    ",ptr.sexo);
+	printf("\n* cpf: %s     ",ptr.cpf);
+	printf("\n* dataN: %s   ",ptr.dataN);
+	printf("\n* nome: %s    ",ptr.nome);
+	printf("\n* ra: %s      ",ptr.ra);
+	printf("\n* sexo: %s    ",ptr.sexo);
 	printf("\n***************");	
 }
 
